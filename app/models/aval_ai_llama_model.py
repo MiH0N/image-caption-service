@@ -13,6 +13,7 @@ class AvalAILLaMACaptionModel(CaptionModel):
         self.client = OpenAI(
             api_key=settings.avalai_api_key,
             base_url=settings.avalai_base_url,
+            timeout=settings.outbound_timeout_seconds,
         )
         self.model_name = model_name 
 

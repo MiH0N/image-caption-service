@@ -54,7 +54,8 @@ class AvalAIGeminiCaptionModel(CaptionModel):
 				response = requests.post(
 						f"{self.base_url}/v1beta/models/{self.model_name}:generateContent",
 						headers={"Authorization": f"Bearer {self.api_key}"},
-						json=payload
+						json=payload,
+						timeout=settings.outbound_timeout_seconds,
 				)
 
 				response.raise_for_status()
