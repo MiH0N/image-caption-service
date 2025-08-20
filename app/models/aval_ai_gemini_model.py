@@ -6,6 +6,7 @@ import requests
 from app.schemas.aval_ai_models import AvalAIModelName
 from app.core.config import settings
 from app.models.base import CaptionModel
+from app.utils.prompt import build_caption_prompt
 
 
 class AvalAIGeminiCaptionModel(CaptionModel):
@@ -26,12 +27,14 @@ class AvalAIGeminiCaptionModel(CaptionModel):
 				image.save(buffered, format="JPEG")
 				base64_image = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-				prompt_text = (
-						f"Generate 4-5 descriptive captions in {language} with a {tone} tone. "
-						"Each caption should have a different perspective. No formatting. Just a list."
+				prompt_text = build_caption_prompt(
+						language=language,
+						tone=tone,
+						context=context,
+						min_captions=4,
+						max_captions=5,
+						format_style="plain",
 				)
-				if context:
-						prompt_text += f" Context: {context}"
 
 				payload = {
 						"model": self.model_name,

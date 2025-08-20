@@ -6,6 +6,7 @@ from openai import OpenAI
 from app.models.base import CaptionModel
 from app.schemas.aval_ai_models import AvalAIModelName 
 from app.core.config import settings
+from app.utils.prompt import build_caption_prompt
 
 class AvalAICaptionModel(CaptionModel):
   def __init__(self, model_name: AvalAIModelName = "gpt-4o"):
@@ -28,19 +29,14 @@ class AvalAICaptionModel(CaptionModel):
     image.save(buffered, format="JPEG")
     base64_image = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-    prompt_text = (
-      "Generate a descriptive caption for the uploaded image that clearly describes its main content in a natural, generate 4-5 captions, each with a different perspective. "
-      f"with a {tone} tone, in {language}. If context is given, consider it."
-      "For each caption, provide a single string without any additional formatting. "
-      "Present the captions as a numbered list in the response. "
-      "Do not include any extra characters or symbols between captions. "
-      "Example format:"
-      "1. Caption 1\n"
-      "2. Caption 2\n"
-      "3. Caption 3\n"
+    prompt_text = build_caption_prompt(
+      language=language,
+      tone=tone,
+      context=context,
+      min_captions=4,
+      max_captions=5,
+      format_style="numbered",
     )
-    if context:
-      prompt_text += f" Context: {context}"
 
     response = self.client.responses.create(
       model=self.model_name,
