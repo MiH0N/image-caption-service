@@ -33,3 +33,21 @@ def build_caption_prompt(
       )
 
     return " ".join(parts)
+
+
+def build_hashtag_prompt(*, language: str, tone: str, context: Optional[str] = None, count: int = 10) -> str:
+    parts: list[str] = []
+    parts.append(
+        f"Generate {count} relevant social media hashtags in {language} with a {tone} tone for the provided image."
+    )
+    if context:
+        parts.append(f"Consider this context: {context}")
+    parts.append("Return only hashtags separated by spaces, no extra text.")
+    return " ".join(parts)
+
+
+def build_elements_prompt(*, language: str) -> str:
+    return (
+        f"List distinct visual elements you can see in the image in {language}. "
+        "Return only a single comma-separated list, no extra text."
+    )

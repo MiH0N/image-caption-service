@@ -1,6 +1,7 @@
 import pyheif
 from PIL import Image
 from io import BytesIO
+import base64
 
 def convert_heic_bytes_to_image(image_bytes: bytes) -> Image.Image:
     heif_file = pyheif.read_heif(image_bytes)
@@ -14,3 +15,9 @@ def convert_heic_bytes_to_image(image_bytes: bytes) -> Image.Image:
         1,
     )
     return image
+
+
+def pil_image_to_base64_jpeg(image: Image.Image) -> str:
+    buffered = BytesIO()
+    image.convert("RGB").save(buffered, format="JPEG")
+    return base64.b64encode(buffered.getvalue()).decode("utf-8")
